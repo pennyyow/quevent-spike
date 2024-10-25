@@ -1,13 +1,13 @@
-package com.api.quevent_spike;
+package com.quevent.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class QueventSpikeApplication {
+public class QueventApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(QueventSpikeApplication.class, args);
+		SpringApplication.run(QueventApplication.class, args);
 	}
 
 }

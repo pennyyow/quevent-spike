@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.api</groupId>
-	<artifactId>quevent-spike</artifactId>
+	<artifactId>quevent-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>quevent-spike</name>
 	<description>Quevent Spike Project</description>

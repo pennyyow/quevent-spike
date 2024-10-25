@@ -1,10 +1,10 @@
-package com.api.quevent_spike;
+package com.quevent.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class QueventSpikeApplicationTests {
+class QueventApplicationTests {
 
 	@Test
 	void contextLoads() {

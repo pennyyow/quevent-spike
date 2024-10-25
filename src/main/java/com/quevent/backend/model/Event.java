@@ -1,4 +1,4 @@
-package com.api.quevent_spike;
+package com.quevent.backend.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
