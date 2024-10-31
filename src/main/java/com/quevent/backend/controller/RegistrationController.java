@@ -5,11 +5,13 @@ import com.quevent.backend.model.RegistrationResponse;
 import com.quevent.backend.model.User;
 import com.quevent.backend.repository.UserRepository;
 import com.quevent.backend.util.JwtUtil;
+import io.jsonwebtoken.security.Password;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +29,14 @@ public class RegistrationController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistrationRequest registrationRequest) {
         User user = new User();
         user.setUsername(registrationRequest.getUsername());
-        user.setPassword(registrationRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
 
         userRepository.save(user);
 
