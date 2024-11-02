@@ -2,13 +2,11 @@ package com.quevent.backend.controller;
 
 import com.quevent.backend.model.LoginRequest;
 import com.quevent.backend.model.LoginResponse;
-import com.quevent.backend.util.JwtUtil;
+import com.quevent.backend.model.RegistrationRequest;
+import com.quevent.backend.model.RegistrationResponse;
+import com.quevent.backend.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,22 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login (@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-        );
+    public ResponseEntity<LoginResponse> login (@RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(authenticationService.login(loginRequest));
+    }
 
-        String token = jwtUtil.generateAccessToken(authentication.getName());
-
-        return ResponseEntity.ok(new LoginResponse(token));
+    @PostMapping("/register")
+    public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest registrationRequest) {
+        return ResponseEntity.ok(authenticationService.register(registrationRequest));
     }
 }

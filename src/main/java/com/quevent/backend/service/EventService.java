@@ -16,6 +16,13 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
+    public Event createEvent(String title, String description) {
+        Event event = new Event();
+        event.setTitle(title);
+        event.setDescription(description);
+        return eventRepository.save(event);
+    }
+
     public Event updateEvent(Long id, String title, String description) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event Not Found: " + id));
         event.setTitle(title);

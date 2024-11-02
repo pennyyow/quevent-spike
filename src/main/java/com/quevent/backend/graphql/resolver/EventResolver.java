@@ -37,15 +37,7 @@ public class EventResolver {
 
     @MutationMapping
     public Event createEvent(@Argument String title, @Argument String description) {
-            // logger.debug("Triggered createEvent with title: {} and description: {}", title, description);
-            Event event = new Event();
-            event.setTitle(title);
-            event.setDescription(description);
-
-            // Log event details
-            System.out.println("Creating event: " + event);
-
-            return eventRepository.save(event);
+        return eventService.createEvent(title, description);
     }
 
     @MutationMapping

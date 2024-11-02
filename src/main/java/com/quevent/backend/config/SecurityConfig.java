@@ -8,32 +8,43 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.security.interfaces.RSAPublicKey;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final UserDetailsService userDetailsService;
+
     @Autowired
-    private UserDetailsService userDetailsService;
+    public SecurityConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     private final String publicKeyString = "-----BEGIN PUBLIC KEY-----\n" +
-            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiYw4A0FoiKNFzj2SlZ48PZegjYEWxHHKvj+qSHCsf9tgoy8CAeMio8R11W7MiAgOF1r/KUWi0PDjMhwfa7zzFtdJ598Gahhq1HWyl4sb6X2YCA8IuR7Lt1vHRAbX7jbPO9+1+fCpdXEp/7Sp06D2fswuatGVSt+fjdPRQVWCB0izoEKSuUJ+1lBD6a+/uwYyxlueWfY+E4mFpdhlBrdsYgL7HBuERaNd/+niQJZkCKXksImCqeGwIeEQh7hF1+0IIc0mOZd1js7cx4/UGJhvHkcp701J8d6VjpsL8Yhlas68x0KWUYkiutb3s+g6GkQEuXFNXrG8WHkdSYoI8UDPZwIDAQAB\n" +
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA98sXknKV4pa2huVXbplr5AFaYoQe/uuEIqKwqUpSuSrmz4rBOuXyw+gHbVP0WCr1k6H8qA2d6IUeO6ZD2j1pOWwpHRzocOpYIq9K8uV4o0eP8WPDY2GrOLLOANrxJcAa4lkJS1l4vfUt8WuONNqo/sqtz3LwfRaGjQM4iPPhJ/oT29yI99HYFrW1YEcSozAugLf2DPbX3e7EKB58HtYUJs8Y2thAgXayELAYq0pChNbvsjwUf7RxqtOSJp7s6WR017/qm7QreCGTDWZIjc82ZJLEbk+mEEmRZejUo6UDmsRRF/jTwpg7C3sMyw5uJv2ob369XPX+9uP81Pko3/pIZQIDAQAB\n" +
             "-----END PUBLIC KEY-----";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/graphql").authenticated()
                 .anyRequest().authenticated()
         )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
@@ -44,7 +55,8 @@ public class SecurityConfig {
                     }
                     jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()); // Use the custom JWT Authentication Converter
                 }))
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/**")); // Disable CSRF for registration/login
+                .csrf(csrf -> csrf.disable());
+//                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/**", "/graphql")); // Disable CSRF for registration/login
 
         return http.build();
     }
@@ -74,9 +86,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-//    @Bean
-//    public CustomUserDetailsService userDetailsService() {
-//        return new CustomUserDetailsService();  // Adjust as per your implementation
-//    }
 }
