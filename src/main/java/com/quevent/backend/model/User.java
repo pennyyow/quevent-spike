@@ -2,6 +2,8 @@ package com.quevent.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users") // @Table() is defined because user is a reserved keyword in PostgreSQL
 public class User {
@@ -12,6 +14,10 @@ public class User {
     @Column(unique = true)
     private String username;
     private String password;
+
+    // One-to-many relationship with Event
+    @OneToMany(mappedBy = "user")  // The "user" field in Event
+    private List<Event> events;
 
     public Long getId() {
         return id;

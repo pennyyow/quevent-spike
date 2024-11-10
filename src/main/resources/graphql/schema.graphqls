@@ -1,7 +1,12 @@
+type User {
+    id: ID!
+}
+
 type Event {
     id: ID!
     title: String!
     description: String!
+    user: User!
 }
 
 type Query {
@@ -11,5 +16,5 @@ type Query {
 type Mutation {
     createEvent(title: String!, description: String!): Event
     updateEvent(id: ID!, title: String!, description: String!): Event
-    deleteEvent(id: ID!): String
+    deleteEvent(id: ID!, userId: ID!): String
 }

@@ -46,7 +46,7 @@ public class EventResolver {
     }
 
     @MutationMapping
-    public String deleteEvent(@Argument Long id) {
-        return eventService.deleteEvent(id);
+    public String deleteEvent(@Argument Long id, @Argument Long userId) {
+        return eventService.deleteEvent(id, userId);
     }
 }

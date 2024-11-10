@@ -36,8 +36,9 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+    // publicKeyString should be the same with the one in the JwtUtil
     private final String publicKeyString = "-----BEGIN PUBLIC KEY-----\n" +
-            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA98sXknKV4pa2huVXbplr5AFaYoQe/uuEIqKwqUpSuSrmz4rBOuXyw+gHbVP0WCr1k6H8qA2d6IUeO6ZD2j1pOWwpHRzocOpYIq9K8uV4o0eP8WPDY2GrOLLOANrxJcAa4lkJS1l4vfUt8WuONNqo/sqtz3LwfRaGjQM4iPPhJ/oT29yI99HYFrW1YEcSozAugLf2DPbX3e7EKB58HtYUJs8Y2thAgXayELAYq0pChNbvsjwUf7RxqtOSJp7s6WR017/qm7QreCGTDWZIjc82ZJLEbk+mEEmRZejUo6UDmsRRF/jTwpg7C3sMyw5uJv2ob369XPX+9uP81Pko3/pIZQIDAQAB\n" +
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsKbuFVuncUs3XNzEGcj4GqEwowak5w4b63aGzU2ZxJCvRPeSpTcAiSZOxG4rsYoMzI4wv4VmXXPbHY8QZNS3zpagMUSZZzZbeq2lr/qWJ4KdTkjZO14rf8IDCsHZJHRmak2DTR8UVbvxEO3FQE7JjEtxVbKFxpk1bYi3nMbpi6QO5m+EBCvitZnSvefWCr7Ksu1Qg/+3xISR+vHJLn/0MTljHxs3YCB66s61JQ1etGxjIwMTYKi/UJhPeNJ2I9lqfrgqGur9Gn3KiNq48E+kWVDaU1LIpVljJwP+DgWo9mKbOAjhkANAJLCu6nqr6bPbIVdeACIpqriBbK+Fn4OG4wIDAQAB\n" +
             "-----END PUBLIC KEY-----";
 
     @Bean
@@ -55,8 +56,8 @@ public class SecurityConfig {
                     }
                     jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()); // Use the custom JWT Authentication Converter
                 }))
-                .csrf(csrf -> csrf.disable());
-//                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/**", "/graphql")); // Disable CSRF for registration/login
+//                .csrf(csrf -> csrf.disable());
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/auth/**", "/graphql")); // Disable CSRF for registration/login
 
         return http.build();
     }
@@ -72,6 +73,8 @@ public class SecurityConfig {
     @Bean
     public JwtDecoder jwtDecoder() throws Exception {
         RSAPublicKey publicKey = KeyUtil.getPublicKeyFromString(publicKeyString);
+
+        System.out.println("Public Key: " + publicKey);
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
 
